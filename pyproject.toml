@@ -1,0 +1,11 @@
+[project]
+name = "gee-dataset"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "aiohttp>=3.11.18",
+    "jupyterlab>=4.4.1",
+    "pandas>=2.2.3",
+]
