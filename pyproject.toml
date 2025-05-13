@@ -6,6 +6,10 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "aiohttp>=3.11.18",
+    "earthengine-api>=1.5.15",
+    "folium>=0.19.5",
+    "geojson>=3.2.0",
     "jupyterlab>=4.4.1",
+    "marimo>=0.13.7",
     "pandas>=2.2.3",
 ]
