@@ -10,7 +10,9 @@ def _():
     import json
     import folium
     import pandas as pd
-    return ee, folium, json, pd
+    import geemap
+    import marimo as mo
+    return ee, folium, geemap, json, pd
 
 
 @app.cell
@@ -20,15 +22,22 @@ def _(ee):
 
 
 @app.cell
-def _(ee):
-    ee.Initialize(project='maps-disaster')
-    return
-
-
-@app.cell
-def _(json):
+def _(a, ee, geemap, json):
     with open('south_sulawesi.geojson', 'r') as f:
-        south_sulawesi = json.load(f)
+        south_sulawesi = json.load(f)# Load FAO GAUL level0 (country boundaries)
+    gaul0 = ee.FeatureCollection('FAO/GAUL/2015/level0')
+
+    # Filter for Indonesia
+    indonesia = gaul0.filter(ee.Filter.eq('ADM0_NAME', 'Indonesia'))
+
+    # Get centroid for map centering
+    center = indonesia.geometry().centroid().coordinates().getInfo()
+    a
+    # Create and display the map
+    Map = geemap.Map(center=center[::-1], zoom=5)
+    Map.addLayer(indonesia, {'color': 'blue'}, 'Indonesia Boundary')
+    Map
+
     return (south_sulawesi,)
 
 
@@ -124,10 +133,31 @@ def _(fluvial_flood_history, pd):
 
 
 @app.cell
+def _(ee, fluvial_flood_history_copy):
+    min_date = ee.Date(fluvial_flood_history_copy['tanggal'].min())
+    max_date = fluvial_flood_history_copy['tanggal'].max()
+    max_date = ee.Date("2020-10-01")
+    return max_date, min_date
+
+
+@app.cell
 def _(fluvial_flood_history_copy):
     df = fluvial_flood_history_copy.query("tanggal == tanggal and lat == lat and lng==lng")[['tanggal', 'lat', 'lng']]
 
     #df.to_csv('south_sulawesi_fluvial_flood_history.csv', index=False)
+    return
+
+
+@app.cell
+def _(max_date, min_date):
+    min_date , max_date
+    return
+
+
+@app.cell
+def _(ee, max_date, min_date, south_sulawesi_fc):
+    nasa_gpm = ee.ImageCollection('NASA/GPM_L3/IMERG_V07')
+    nasa_gpm.filterBounds(south_sulawesi_fc).filterDate(min_date, max_date).mean().getInfo()
     return
 
 
